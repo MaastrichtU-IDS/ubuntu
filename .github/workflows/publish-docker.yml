@@ -19,7 +19,9 @@ jobs:
   # Build and push image to ghcr.io
   build-and-publish-latest:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v3
       #- name: Build image
