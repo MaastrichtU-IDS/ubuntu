@@ -43,10 +43,24 @@ jobs:
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
 
-          VERSION=latest
+          #VERSION=latest
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          #echo IMAGE_ID=$IMAGE_ID
+          #echo VERSION=$VERSION
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+
+      - name: Build and publish main latest Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./
+          file: ./Dockerfile
+          pull: true
+          push: true
+          tags: ${{ env.IMAGE_ID }}:${{ env.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          #docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          #docker push $IMAGE_ID:$VERSION
